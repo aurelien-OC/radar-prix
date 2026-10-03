@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Radar Prix</title>
+<style>
+  :root{
+    --bg:#f7f5f1;
+    --surface:#ffffff;
+    --fg:#1c1a17;
+    --muted:#6b655c;
+    --accent:#c4542a;
+    --line:#e3ddd3;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#17150f;
+      --surface:#211e17;
+      --fg:#f2ede4;
+      --muted:#a39b8c;
+      --accent:#e07a4a;
+      --line:#3a362c;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#17150f;
+    --surface:#211e17;
+    --fg:#f2ede4;
+    --muted:#a39b8c;
+    --accent:#e07a4a;
+    --line:#3a362c;
+    color-scheme: dark;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--fg);
+    font-family:"Source Sans 3", -apple-system, Segoe UI, sans-serif;
+    padding-inline:20px;
+  }
+  img{max-width:100%;}
+  .wrap{max-width:760px;margin:0 auto;padding-block:48px 80px;}
+
+  h1,h2,h3{font-family:"Fraunces", Georgia, serif; text-wrap:balance; margin:0;}
+  a{color:var(--accent);}
+
+  header.top{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-block:4px 56px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:56px;
+    flex-wrap:wrap; gap:12px;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:"Fraunces", serif; font-weight:600; font-size:1.25rem;}
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);}
+  nav.top a{color:var(--muted); text-decoration:none; margin-left:22px; font-size:0.95rem;}
+  nav.top a:hover{color:var(--fg);}
+
+  .eyebrow{
+    text-transform:uppercase; letter-spacing:0.08em; font-size:0.78rem;
+    color:var(--muted); margin-bottom:14px; font-weight:600;
+  }
+  .hero h1{font-size:clamp(2rem,5vw,2.9rem); line-height:1.1; max-width:18ch;}
+  .hero p.lede{
+    font-size:1.1rem; color:var(--muted); max-width:52ch; margin-top:18px; line-height:1.55;
+  }
+
+  .search-mock{
+    margin-top:36px; background:var(--surface); border:1px solid var(--line);
+    border-radius:10px; padding:10px; display:flex; gap:10px; max-width:520px;
+  }
+  .search-mock input{
+    flex:1; min-width:0; border:none; background:transparent; color:var(--fg);
+    font-size:1rem; padding:10px 8px; font-family:inherit;
+  }
+  .search-mock input:focus{outline:none;}
+  .search-mock button{
+    background:var(--accent); color:#fff; border:none; border-radius:7px;
+    padding:10px 18px; font-size:0.95rem; font-weight:600; cursor:pointer; font-family:inherit;
+  }
+  .search-mock button:hover{filter:brightness(1.07);}
+  .example-chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;}
+  .chip{
+    font-size:0.82rem; color:var(--muted); border:1px solid var(--line);
+    border-radius:999px; padding:5px 12px; background:var(--surface);
+  }
+
+  section{margin-top:72px;}
+  .steps{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:28px;
+  }
+  @media (max-width:560px){ .steps{grid-template-columns:1fr;} }
+  .step{
+    background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:22px;
+  }
+  .step .num{
+    font-family:"Fraunces", serif; font-size:1.6rem; color:var(--accent); margin-bottom:10px; display:block;
+  }
+  .step h3{font-size:1.05rem; margin-bottom:8px;}
+  .step p{color:var(--muted); font-size:0.94rem; line-height:1.5; margin:0;}
+
+  .compare-table{
+    width:100%; border-collapse:collapse; margin-top:28px; font-size:0.92rem;
+    background:var(--surface); border:1px solid var(--line); border-radius:12px; overflow:hidden;
+  }
+  .compare-table th, .compare-table td{
+    padding:12px 16px; text-align:left; border-bottom:1px solid var(--line);
+  }
+  .compare-table th{color:var(--muted); font-weight:600; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.04em;}
+  .compare-table tr:last-child td{border-bottom:none;}
+  .compare-table td.price{font-variant-numeric:tabular-nums; font-weight:600;}
+  .tag-best{
+    display:inline-block; margin-left:8px; font-size:0.72rem; background:var(--accent); color:#fff;
+    border-radius:999px; padding:2px 8px; vertical-align:middle;
+  }
+  .note{color:var(--muted); font-size:0.85rem; margin-top:10px;}
+
+  .categories{display:flex; flex-wrap:wrap; gap:10px; margin-top:24px;}
+  .categories span{
+    border:1px solid var(--line); border-radius:8px; padding:8px 14px; font-size:0.9rem;
+    background:var(--surface);
+  }
+
+  .status-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:24px; margin-top:28px;
+  }
+  .status-card .pill{
+    display:inline-block; font-size:0.78rem; font-weight:600; letter-spacing:0.03em;
+    background:var(--line); color:var(--fg); border-radius:999px; padding:4px 12px; margin-bottom:12px;
+  }
+  .status-card p{color:var(--muted); line-height:1.6; margin:0;}
+
+  footer{
+    margin-top:80px; padding-top:24px; border-top:1px solid var(--line);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+    color:var(--muted); font-size:0.85rem;
+  }
+  footer a{color:var(--muted);}
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand"><span class="dot"></span> Radar Prix</div>
+    <nav class="top">
+      <a href="#comment-ca-marche">Comment ça marche</a>
+      <a href="#categories">Catégories</a>
+      <a href="#a-propos">À propos</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">Comparateur de prix indépendant</div>
+    <h1>Un même produit, plusieurs enseignes, un seul prix à retenir : le plus bas.</h1>
+    <p class="lede">Radar Prix recense les prix d'un même article chez plusieurs marchands en ligne français, à partir de leur identifiant produit (code-barres EAN), pour repérer rapidement la meilleure offre disponible.</p>
+
+    <div class="search-mock">
+      <input type="text" placeholder="Rechercher un produit, une marque ou un EAN…" aria-label="Rechercher un produit">
+      <button type="button">Comparer</button>
+    </div>
+    <div class="example-chips">
+      <span class="chip">Électroménager</span>
+      <span class="chip">Jouets</span>
+      <span class="chip">High-tech</span>
+      <span class="chip">Maison &amp; jardin</span>
+      <span class="chip">Sport &amp; loisirs</span>
+    </div>
+  </section>
+
+  <section id="comment-ca-marche">
+    <div class="eyebrow">Méthode</div>
+    <h2>Comment ça marche</h2>
+    <div class="steps">
+      <div class="step">
+        <span class="num">01</span>
+        <h3>Identifier le produit</h3>
+        <p>Chaque article est repéré par son code EAN, l'identifiant qui ne change pas d'un site à l'autre, même si le titre ou la photo diffèrent.</p>
+      </div>
+      <div class="step">
+        <span class="num">02</span>
+        <h3>Relever les prix</h3>
+        <p>Le même EAN est recherché chez plusieurs enseignes pour en tirer un tableau comparatif à jour.</p>
+      </div>
+      <div class="step">
+        <span class="num">03</span>
+        <h3>Afficher le meilleur prix</h3>
+        <p>Le prix le plus intéressant, disponibilité comprise, est mis en avant pour guider le choix.</p>
+      </div>
+    </div>
+
+    <table class="compare-table" aria-label="Exemple de comparaison de prix">
+      <thead>
+        <tr><th>Enseigne</th><th>Prix</th><th>Disponibilité</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Enseigne A</td><td class="price">34,90 €<span class="tag-best">Meilleur prix</span></td><td>En stock</td></tr>
+        <tr><td>Enseigne B</td><td class="price">38,50 €</td><td>En stock</td></tr>
+        <tr><td>Enseigne C</td><td class="price">41,20 €</td><td>Stock limité</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Exemple illustratif — les prix réels varient selon le produit et l'enseigne, et sont actualisés à partir des catalogues fournis par les marchands.</p>
+  </section>
+
+  <section id="categories">
+    <div class="eyebrow">Couverture</div>
+    <h2>Catégories suivies</h2>
+    <p class="lede" style="margin-top:10px;">Le périmètre suit les grandes familles de la distribution généraliste, avec une attention particulière aux produits vendus par plusieurs enseignes en parallèle.</p>
+    <div class="categories">
+      <span>Électroménager</span>
+      <span>High-tech &amp; informatique</span>
+      <span>Jouets &amp; jeux</span>
+      <span>Maison &amp; décoration</span>
+      <span>Bricolage &amp; jardin</span>
+      <span>Sport &amp; loisirs</span>
+      <span>Puériculture</span>
+    </div>
+  </section>
+
+  <section id="a-propos">
+    <div class="eyebrow">À propos</div>
+    <h2>Un projet mené en indépendant</h2>
+    <div class="status-card">
+      <span class="pill">En construction</span>
+      <p>Radar Prix est développé et maintenu par un seul éditeur, qui alimente le comparateur à partir des catalogues produits mis à disposition par les enseignes partenaires. Le site est en phase de constitution de son catalogue de comparaison ; son contenu s'étoffe au fil de l'intégration de nouvelles enseignes.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Radar Prix — comparateur de prix indépendant</span>
+    <a href="mailto:pouchainaurelien@gmail.com">Contact</a>
+  </footer>
+
+</div>
+</body>
+</html>
